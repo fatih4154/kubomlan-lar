@@ -1,0 +1,553 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kübomla anılarımız... Seni o kadar seviyorum ki hazırlarken ağladım</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Georgia', serif;
+            background: linear-gradient(135deg, #ffeef8 0%, #e8d5f2 100%);
+            min-height: 100vh;
+            padding: 40px 20px;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* Kalp animasyonları */
+        .floating-heart {
+            position: fixed;
+            color: rgba(255, 105, 180, 0.3);
+            font-size: 25px;
+            animation: float 20s infinite;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        @keyframes float {
+            0% {
+                transform: translateY(100vh) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+            90% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-100vh) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 2;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 50px;
+            animation: fadeInDown 1s ease;
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        h1 {
+            font-size: 48px;
+            color: #d946ef;
+            margin-bottom: 15px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .subtitle {
+            font-size: 22px;
+            color: #7c3aed;
+            font-style: italic;
+        }
+
+        .gallery {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 25px;
+            padding: 20px;
+        }
+
+        .photo-card {
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+            transition: all 0.4s ease;
+            cursor: pointer;
+            animation: fadeInUp 0.6s ease;
+            animation-fill-mode: both;
+        }
+
+        .photo-card:nth-child(1) { animation-delay: 0.1s; }
+        .photo-card:nth-child(2) { animation-delay: 0.15s; }
+        .photo-card:nth-child(3) { animation-delay: 0.2s; }
+        .photo-card:nth-child(4) { animation-delay: 0.25s; }
+        .photo-card:nth-child(5) { animation-delay: 0.3s; }
+        .photo-card:nth-child(6) { animation-delay: 0.35s; }
+        .photo-card:nth-child(7) { animation-delay: 0.4s; }
+        .photo-card:nth-child(8) { animation-delay: 0.45s; }
+        .photo-card:nth-child(9) { animation-delay: 0.5s; }
+        .photo-card:nth-child(10) { animation-delay: 0.55s; }
+        .photo-card:nth-child(11) { animation-delay: 0.6s; }
+        .photo-card:nth-child(12) { animation-delay: 0.65s; }
+        .photo-card:nth-child(13) { animation-delay: 0.7s; }
+        .photo-card:nth-child(14) { animation-delay: 0.75s; }
+        .photo-card:nth-child(15) { animation-delay: 0.8s; }
+        .photo-card:nth-child(16) { animation-delay: 0.85s; }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .photo-card:hover {
+            transform: translateY(-10px) scale(1.03);
+            box-shadow: 0 20px 40px rgba(217, 70, 239, 0.3);
+        }
+
+        .photo-container {
+            width: 100%;
+            height: 280px;
+            overflow: hidden;
+            background: linear-gradient(135deg, #ffeef8 0%, #e8d5f2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .photo-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.4s ease;
+        }
+
+        .photo-card:hover .photo-container img {
+            transform: scale(1.1);
+        }
+
+        .photo-placeholder {
+            font-size: 60px;
+            opacity: 0.3;
+        }
+
+        .date-label {
+            padding: 20px;
+            text-align: center;
+            background: linear-gradient(135deg, #ffeef8 0%, #fff 100%);
+        }
+
+        .date {
+            font-size: 16px;
+            color: #d946ef;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .description {
+            font-size: 14px;
+            color: #7c3aed;
+            font-style: italic;
+        }
+
+        /* Modal için (fotoğrafa tıklayınca büyük gösterim) */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.9);
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .modal-content {
+            position: relative;
+            margin: auto;
+            padding: 20px;
+            width: 90%;
+            max-width: 900px;
+            top: 50%;
+            transform: translateY(-50%);
+            text-align: center;
+        }
+
+        .modal-content img {
+            max-width: 100%;
+            max-height: 80vh;
+            border-radius: 15px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+        }
+
+        .modal-date {
+            color: white;
+            font-size: 24px;
+            margin-top: 20px;
+            font-weight: bold;
+        }
+
+        .modal-description {
+            color: #ffeef8;
+            font-size: 18px;
+            margin-top: 10px;
+            font-style: italic;
+        }
+
+        .close {
+            position: absolute;
+            top: 20px;
+            right: 40px;
+            color: #fff;
+            font-size: 40px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .close:hover {
+            color: #ff69b4;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 60px;
+            padding: 30px;
+            animation: fadeIn 2s ease;
+        }
+
+        .footer-text {
+            font-size: 24px;
+            color: #d946ef;
+            font-style: italic;
+        }
+
+        .hearts {
+            font-size: 30px;
+            margin-top: 15px;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        /* Responsive tasarım */
+        @media (max-width: 1200px) {
+            .gallery {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .gallery {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 15px;
+            }
+            
+            h1 {
+                font-size: 36px;
+            }
+            
+            .photo-container {
+                height: 200px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .gallery {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    
+
+    <div class="container">
+        <div class="header">
+            <h1>Kübomla büyüyoruz anılarımız.Aman diyim ağlatabilir</h1>
+            <p class="subtitle">Her şeyim.Hayatımın anlamı...</p>
+        </div>
+
+        <div class="gallery">
+            <!-- Fotoğraf 1 -->
+            <div class="photo-card" onclick="openModal(1)">
+                <div class="photo-container">
+                    <!-- Fotoğrafınızı buraya ekleyin: <img src="photos/photo1.jpg" alt="Anı 1"> -->
+                    <div class="photo-placeholder">📷</div>
+                </div>
+                <div class="date-label">
+                    <div class="date">3 Mart 2025</div>
+                    <div class="description">Kübomla en sevdiğim fotoğraflarımızdan biri ilk..</div>
+                </div>
+            </div>
+
+            <!-- Fotoğraf 2 -->
+            <div class="photo-card" onclick="openModal(2)">
+                <div class="photo-container">
+                    <div class="photo-placeholder">📷</div>
+                </div>
+                <div class="date-label">
+                    <div class="date">3 Mayıs 2025</div>
+                    <div class="description">Barışmamız</div>
+                </div>
+            </div>
+
+            <!-- Fotoğraf 3 -->
+            <div class="photo-card" onclick="openModal(3)">
+                <div class="photo-container">
+                    <div class="photo-placeholder">📷</div>
+                </div>
+                <div class="date-label">
+                    <div class="date">19 Mayıs 2025</div>
+                    <div class="description">İlk benimle uyuduğu gün heyecandan ölmüştüm</div>
+                </div>
+            </div>
+
+            <!-- Fotoğraf 4 -->
+            <div class="photo-card" onclick="openModal(4)">
+                <div class="photo-container">
+                    <div class="photo-placeholder">📷</div>
+                </div>
+                <div class="date-label">
+                    <div class="date">11 Haziran 2025</div>
+                    <div class="description">Ankara kavuşmamızz</div>
+                </div>
+            </div>
+
+            <!-- Fotoğraf 5 -->
+            <div class="photo-card" onclick="openModal(5)">
+                <div class="photo-container">
+                    <div class="photo-placeholder">📷</div>
+                </div>
+                <div class="date-label">
+                    <div class="date">30 Kasım 2025</div>
+                    <div class="description">Bu fotoğrafın normalde burda olmaması gerekiyor fakat bayılıyorum buna</div>
+                </div>
+            </div>
+
+            <!-- Fotoğraf 6 -->
+            <div class="photo-card" onclick="openModal(6)">
+                <div class="photo-container">
+                    <div class="photo-placeholder">📷</div>
+                </div>
+                <div class="date-label">
+                    <div class="date">1 Temmuz 2025</div>
+                    <div class="description">Hem Kavuşma Hem Ayrılık...</div>
+                </div>
+            </div>
+
+            <!-- Fotoğraf 7 -->
+            <div class="photo-card" onclick="openModal(7)">
+                <div class="photo-container">
+                    <div class="photo-placeholder">📷</div>
+                </div>
+                <div class="date-label">
+                    <div class="date">23 Temmuz 2025</div>
+                    <div class="description">Özür ve Kavuşma ölmüştük özlemden</div>
+                </div>
+            </div>
+
+            <!-- Fotoğraf 8 -->
+            <div class="photo-card" onclick="openModal(8)">
+                <div class="photo-container">
+                    <div class="photo-placeholder">📷</div>
+                </div>
+                <div class="date-label">
+                    <div class="date">15 Ağustos 2025</div>
+                    <div class="description">İlk Tatilimiz ve Kavuşmaaa</div>
+                </div>
+            </div>
+
+            <!-- Fotoğraf 9 -->
+            <div class="photo-card" onclick="openModal(9)">
+                <div class="photo-container">
+                    <div class="photo-placeholder">📷</div>
+                </div>
+                <div class="date-label">
+                    <div class="date">18 Ağustos 2025</div>
+                    <div class="description">Aşkımla Datça</div>
+                </div>
+            </div>
+
+            <!-- Fotoğraf 10 -->
+            <div class="photo-card" onclick="openModal(10)">
+                <div class="photo-container">
+                    <div class="photo-placeholder">📷</div>
+                </div>
+                <div class="date-label">
+                    <div class="date">25 Ağustos 2025</div>
+                    <div class="description">Galataya çıkardık hatunumla sözleşme</div>
+                </div>
+            </div>
+
+            <!-- Fotoğraf 11 -->
+            <div class="photo-card" onclick="openModal(11)">
+                <div class="photo-container">
+                    <div class="photo-placeholder">📷</div>
+                </div>
+                <div class="date-label">
+                    <div class="date">27 Ağustos 2025</div>
+                    <div class="description">Aşkıma kürek çektirdim</div>
+                </div>
+            </div>
+
+            <!-- Fotoğraf 12 -->
+            <div class="photo-card" onclick="openModal(12)">
+                <div class="photo-container">
+                    <div class="photo-placeholder">📷</div>
+                </div>
+                <div class="date-label">
+                    <div class="date">30 Eylül 2025</div>
+                    <div class="description">Tatilden sonra en uzun ayrılık ve sonunda Ankara kavuşması</div>
+                </div>
+            </div>
+
+            <!-- Fotoğraf 13 -->
+            <div class="photo-card" onclick="openModal(13)">
+                <div class="photo-container">
+                    <div class="photo-placeholder">📷</div>
+                </div>
+                <div class="date-label">
+                    <div class="date">30 Eylül 2025</div>
+                    <div class="description">Aşkımın ilk motora binişi</div>
+                </div>
+            </div>
+
+            <!-- Fotoğraf 14 -->
+            <div class="photo-card" onclick="openModal(14)">
+                <div class="photo-container">
+                    <div class="photo-placeholder">📷</div>
+                </div>
+                <div class="date-label">
+                    <div class="date">9 Ekim 2025</div>
+                    <div class="description">Ankara Konserimiz 2. konserimiz ama başbaşa</div>
+                </div>
+            </div>
+
+            <!-- Fotoğraf 15 -->
+            <div class="photo-card" onclick="openModal(15)">
+                <div class="photo-container">
+                    <div class="photo-placeholder">📷</div>
+                </div>
+                <div class="date-label">
+                    <div class="date">4 Kasım 2025</div>
+                    <div class="description">Hayatımın en anlamlı en güzel doğum günü</div>
+                </div>
+            </div>
+
+            <!-- Fotoğraf 16 -->
+            <div class="photo-card" onclick="openModal(16)">
+                <div class="photo-container">
+                    <div class="photo-placeholder">📷</div>
+                </div>
+                <div class="date-label">
+                    <div class="date">4 Kasım 2025</div>
+                    <div class="description">Bugün ve her gün... Sana o kadar aşığım ki anlatamam</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer">
+            <div class="footer-text">Aşkım sevgilim Kübomm</div>
+            <div class="hearts">❤️ 💕 💖 💗 💓</div>
+        </div>
+    </div>
+
+    <!-- Modal (Büyük görünüm) -->
+    <div id="photoModal" class="modal" onclick="closeModal()">
+        <span class="close">&times;</span>
+        <div class="modal-content">
+            <img id="modalImg" src="" alt="Fotoğraf">
+            <div class="modal-date" id="modalDate"></div>
+            <div class="modal-description" id="modalDesc"></div>
+        </div>
+    </div>
+
+    <script>
+        // Fotoğraf verilerini buraya ekleyin
+        const photos = {
+            1: { src: 'photos/photo1.jpg', date: '3 Mart 2025', desc: 'Kübomla en sevdiğim fotoğraflarımızdan biri ilk..' },
+            2: { src: 'photos/photo2.jpg', date: '3 Mayıs 2025', desc: 'Barışmamız' },
+            3: { src: 'photos/photo3.jpg', date: '19 Mayıs 2025', desc: 'İlk benimle uyuduğu gün heyecandan ölmüştüm' },
+            4: { src: 'photos/photo4.jpg', date: '11 Haziran 2025', desc: 'Ankara kavuşmamızz' },
+            5: { src: 'photos/photo5.jpg', date: '30 Kasım 2025', desc: 'Bu fotoğrafın normalde burda olmaması gerekiyor fakat bayılıyorum buna' },
+            6: { src: 'photos/photo6.jpg', date: '1 Temmuz 2025', desc: 'Hem Kavuşma Hem Ayrılık...' },
+            7: { src: 'photos/photo7.jpg', date: '23 Temmuz 2025', desc: 'Özür ve Kavuşma ölmüştük özlemden' },
+            8: { src: 'photos/photo8.jpg', date: '15 Ağustos 2025', desc: 'İlk Tatilimiz ve Kavuşmaaa' },
+            9: { src: 'photos/photo9.jpg', date: '18 Ağustos 2025', desc: 'Aşkımla Datça' },
+            10: { src: 'photos/photo10.jpg', date: '25 Ağustos2025', desc: 'Galataya çıkardık hatunumla sözleşme' },
+            11: { src: 'photos/photo11.jpg', date: '27 Ağustos 2025', desc: 'Aşkıma kürek çektirdim' },
+            12: { src: 'photos/photo12.jpg', date: '30 Eylül 2025', desc: 'Tatilden sonra en uzun ayrılık ve sonunda Ankara kavuşması' },
+            13: { src: 'photos/photo13.jpg', date: '30 Eylül 2025', desc: 'Aşkımın ilk motora binişi' },
+            14: { src: 'photos/photo14.jpg', date: '9 Ekim 2025', desc: 'Ankara Konserimiz 2. konserimiz ama başbaşa' },
+            15: { src: 'photos/photo15.jpg', date: '4 Kasım 2025', desc: 'Hayatımın en anlamlı en güzel doğum günü' },
+            16: { src: 'photos/photo16.jpg', date: '4 Kasım 2025', desc: 'Bugün ve her gün... Sana o kadar aşığım ki anlatamam' },
+        };
+
+        function openModal(photoId) {
+            const modal = document.getElementById('photoModal');
+            const modalImg = document.getElementById('modalImg');
+            const modalDate = document.getElementById('modalDate');
+            const modalDesc = document.getElementById('modalDesc');
+            
+            const photo = photos[photoId];
+            modalImg.src = photo.src;
+            modalDate.textContent = photo.date;
+            modalDesc.textContent = photo.desc;
+            
+            modal.style.display = 'block';
+        }
+
+        function closeModal() {
+            document.getElementById('photoModal').style.display = 'none';
+        }
+
+        // ESC tuşu ile kapat
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape') {
+                closeModal();
+            }
+        });
+    </script>
+</body>
+</html>
